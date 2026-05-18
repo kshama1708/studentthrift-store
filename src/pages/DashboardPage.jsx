@@ -284,11 +284,9 @@ export default function DashboardPage({
   const user = JSON.parse(
     localStorage.getItem("user")
   );
-useEffect(() => {
-  fetchMyProducts();
-}, [fetchMyProducts]);
 
-  const fetchMyProducts = async () => {
+
+const fetchMyProducts = async () => {
   try {
     const token = localStorage.getItem("token");
 
@@ -310,9 +308,6 @@ useEffect(() => {
   }
 };
 
-useEffect(() => {
-  fetchMyProducts();
-}, []);
 
   const goTo = (key) => {
     if (key === "chat") {
@@ -322,6 +317,9 @@ useEffect(() => {
 
     setTab(key);
   };
+  useEffect(() => {
+  fetchMyProducts();
+}, []);
 
   return (
     <div
