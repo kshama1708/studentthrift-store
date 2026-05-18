@@ -1,0 +1,33 @@
+/* src/styles/productcard.css */
+
+.product-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.product-img {
+  aspect-ratio: 4/3;
+  background: var(--cream-200);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  position: relative;
+}
+
+.product-body {
+  padding: 14px;
+}
+
+.product-title {
+  font-weight: 600;
+  margin: 8px 0;
+}
+
+.price-selling {
+  color: var(--green-500);
+  font-weight: bold;
+}
