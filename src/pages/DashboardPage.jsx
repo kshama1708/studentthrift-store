@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 import { StatCard, ProductCard } from "../components/UI";
@@ -286,7 +286,7 @@ export default function DashboardPage({
   );
 
 
-const fetchMyProducts = async () => {
+const fetchMyProducts = useCallback(async () => {
   try {
     const token = localStorage.getItem("token");
 
@@ -306,7 +306,7 @@ const fetchMyProducts = async () => {
   } finally {
     setLoading(false);
   }
-};
+}, []);
 
 
   const goTo = (key) => {
@@ -317,9 +317,9 @@ const fetchMyProducts = async () => {
 
     setTab(key);
   };
-  useEffect(() => {
+ useEffect(() => {
   fetchMyProducts();
-}, []);
+}, [fetchMyProducts]);
 
   return (
     <div
