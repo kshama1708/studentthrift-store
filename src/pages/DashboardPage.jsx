@@ -284,10 +284,9 @@ export default function DashboardPage({
   const user = JSON.parse(
     localStorage.getItem("user")
   );
-
-  useEffect(() => {
-    fetchMyProducts();
-  }, []);
+useEffect(() => {
+  fetchMyProducts();
+}, [fetchMyProducts]);
 
   const fetchMyProducts = async () => {
     try {

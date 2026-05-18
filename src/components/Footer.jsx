@@ -13,21 +13,21 @@ export default function Footer() {
             🌿 The Thrift Store
           </p>
           <p style={{ fontSize: 13, lineHeight: 1.6 }}>
-            Your campus marketplace for affordable academic essentials.
+            Your marketplace for affordable academic essentials.
           </p>
         </div>
 
         <div>
           <p style={{ fontWeight: 600, color: "#fff", marginBottom: 10, fontSize: 13 }}>Quick Links</p>
-          {["Home", "About", "Sell an Item", "Gift Cards"].map(l => (
-            <p key={l} style={{ marginBottom: 6 }}><a href="#">{l}</a></p>
+          {["Home", "About", "Sell an Item"].map(l => (
+            <p key={l} style={{ marginBottom: 6 }}><a href="/">{l}</a></p>
           ))}
         </div>
 
         <div>
           <p style={{ fontWeight: 600, color: "#fff", marginBottom: 10, fontSize: 13 }}>Support</p>
           {["Contact Us", "Terms of Service", "Privacy Policy", "Help Center"].map(l => (
-            <p key={l} style={{ marginBottom: 6 }}><a href="#">{l}</a></p>
+            <p key={l} style={{ marginBottom: 6 }}><a href="/">{l}</a></p>
           ))}
         </div>
 

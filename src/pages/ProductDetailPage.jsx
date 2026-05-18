@@ -1,5 +1,4 @@
 import {
-  Stars,
   BackButton,
 } from "../components/UI";
 
