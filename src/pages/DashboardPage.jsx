@@ -289,33 +289,30 @@ useEffect(() => {
 }, [fetchMyProducts]);
 
   const fetchMyProducts = async () => {
-    try {
-      const token =
-        localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      const response = await axios.get(
-        `${API}/api/products/my-products`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    const response = await axios.get(
+      `${API}/api/products/my-products`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-      setProducts(response.data.products || []);
+    setProducts(response.data.products || []);
+  } catch (err) {
+    console.log(err);
+    addToast?.("Failed to fetch products", "error");
+  } finally {
+    setLoading(false);
+  }
+};
 
-    } catch (err) {
-      console.log(err);
-
-      addToast?.(
-        "Failed to fetch products",
-        "error"
-      );
-
-    } finally {
-      setLoading(false);
-    }
-  };
+useEffect(() => {
+  fetchMyProducts();
+}, []);
 
   const goTo = (key) => {
     if (key === "chat") {
