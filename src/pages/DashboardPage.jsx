@@ -306,7 +306,7 @@ const fetchMyProducts = useCallback(async () => {
   } finally {
     setLoading(false);
   }
-}, []);
+}, [addToast]);
 
 
   const goTo = (key) => {
