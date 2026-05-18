@@ -1,17 +1,68 @@
 import { useState } from "react";
+import api from "../api/api";
 
-export default function AdminLogin({ setPage }) {
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
+export default function AdminLogin({
+  setPage,
+}) {
+  const [email, setEmail] =
+    useState("");
 
-  const handleLogin = () => {
-    if (
-      name === "admin" &&
-      password === "12345"
-    ) {
+  const [password, setPassword] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const handleLogin = async () => {
+    try {
+      setLoading(true);
+
+      const res = await api.post(
+        "/auth/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      // CHECK ADMIN
+      if (
+        res.data.user.role !==
+        "admin"
+      ) {
+        alert(
+          "Access denied. Not admin."
+        );
+
+        return;
+      }
+
+      // SAVE TOKEN
+      localStorage.setItem(
+        "token",
+        res.data.token
+      );
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(
+          res.data.user
+        )
+      );
+
+      alert("Admin login success");
+
       setPage("admin");
-    } else {
-      alert("Wrong admin credentials");
+    } catch (error) {
+      console.log(error);
+
+      alert(
+        error.response?.data
+          ?.message ||
+          "Login failed"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -25,15 +76,23 @@ export default function AdminLogin({ setPage }) {
           padding: 24,
         }}
       >
-        <h2 style={{ marginBottom: 20 }}>
+        <h2
+          style={{
+            marginBottom: 20,
+          }}
+        >
           Admin Login
         </h2>
 
         <input
           className="input-field"
-          placeholder="Admin Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          placeholder="Admin Email"
+          value={email}
+          onChange={(e) =>
+            setEmail(
+              e.target.value
+            )
+          }
         />
 
         <input
@@ -41,16 +100,28 @@ export default function AdminLogin({ setPage }) {
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={{ marginTop: 12 }}
+          onChange={(e) =>
+            setPassword(
+              e.target.value
+            )
+          }
+          style={{
+            marginTop: 12,
+          }}
         />
 
         <button
           className="btn-primary"
-          style={{ width: "100%", marginTop: 16 }}
+          style={{
+            width: "100%",
+            marginTop: 16,
+          }}
           onClick={handleLogin}
+          disabled={loading}
         >
-          Login
+          {loading
+            ? "Logging in..."
+            : "Login"}
         </button>
       </div>
     </div>

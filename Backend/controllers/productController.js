@@ -6,7 +6,6 @@ export const addProduct = async (
   res
 ) => {
   try {
-
     const {
       title,
       description,
@@ -14,9 +13,11 @@ export const addProduct = async (
       category,
     } = req.body;
 
-    const images = req.files.map(
-      (file) => file.path
-    );
+    const images = req.files
+      ? req.files.map(
+          (file) => file.path
+        )
+      : [];
 
     const product =
       await Product.create({
@@ -32,8 +33,8 @@ export const addProduct = async (
       success: true,
       product,
     });
-
   } catch (err) {
+    console.log(err);
 
     res.status(500).json({
       success: false,
@@ -49,7 +50,9 @@ export const getProducts = async (
   try {
 
     const products =
-      await Product.find().populate(
+      await Product.find({
+  status: "approved",
+}).populate(
         "seller",
         "name email"
       );

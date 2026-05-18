@@ -27,6 +27,17 @@ const productSchema = new mongoose.Schema(
       default: [],
     },
 
+    status: {
+  type: String,
+  enum: [
+    "pending",
+    "approved",
+    "rejected",
+    "sold",
+  ],
+  default: "pending",
+},
+
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

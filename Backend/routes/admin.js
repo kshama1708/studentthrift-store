@@ -5,6 +5,9 @@ import {
   updateUserStatus,
   getAllProducts,
   removeProduct,
+  approveProduct,
+  rejectProduct,
+  deleteUser,
 } from "../controllers/adminController.js";
 import { protect, adminOnly } from "../middleware/auth.js";
 
@@ -18,8 +21,24 @@ router.get("/users", getAllUsers);
 router.put("/users/:id/status", updateUserStatus);
 
 router.get("/products", getAllProducts);
-router.delete("/products/:id", removeProduct);
+router.put(
+  "/products/:id/approve",
+  approveProduct
+);
 
+router.put(
+  "/products/:id/reject",
+  rejectProduct
+);
 
+router.delete(
+  "/products/:id",
+  removeProduct
+);
+
+router.delete(
+  "/users/:id",
+  deleteUser
+);
 
 export default router;

@@ -1,63 +1,276 @@
-import { BackButton, EmptyState } from "../components/UI";
-import { PRODUCTS } from "../data/Data";
+import {
+  useEffect,
+  useState,
+} from "react";
 
-export default function WishlistPage({ setPage, wishlist, setWishlist, setSelectedProduct, addToast }) {
-  const items = PRODUCTS.filter(p => wishlist.includes(p.id));
+import api from "../api/api";
 
-  const removeFromWishlist = id => {
-    setWishlist(w => w.filter(x => x !== id));
-    addToast("Removed from wishlist", "success");
+import {
+  BackButton,
+  EmptyState,
+} from "../components/UI";
+
+export default function WishlistPage({
+  setPage,
+  wishlist,
+  setWishlist,
+  setSelectedProduct,
+  addToast,
+}) {
+  const [items, setItems] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  // FETCH REAL PRODUCTS
+  useEffect(() => {
+    const fetchWishlistProducts =
+      async () => {
+        try {
+          setLoading(true);
+
+          const res =
+            await api.get(
+              "/products"
+            );
+
+          const allProducts =
+            res.data.products || [];
+
+          const wishlistProducts =
+            allProducts.filter((p) =>
+              wishlist.includes(
+                p._id
+              )
+            );
+
+          setItems(
+            wishlistProducts
+          );
+        } catch (error) {
+          console.log(error);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+    fetchWishlistProducts();
+  }, [wishlist]);
+
+  // REMOVE ITEM
+  const removeFromWishlist = (
+    id
+  ) => {
+    setWishlist((w) =>
+      w.filter((x) => x !== id)
+    );
+
+    addToast(
+      "Removed from wishlist",
+      "success"
+    );
   };
 
-  const viewProduct = p => { setSelectedProduct(p); setPage("product-detail"); };
+  // VIEW PRODUCT
+  const viewProduct = (p) => {
+    setSelectedProduct(p);
+
+    setPage("product-detail");
+  };
 
   return (
-    <div className="page" style={{ padding: "32px 24px", maxWidth: 1200, margin: "0 auto" }}>
-      <BackButton onClick={() => setPage("home")} />
+    <div
+      className="page"
+      style={{
+        padding: "32px 24px",
+        maxWidth: 1200,
+        margin: "0 auto",
+      }}
+    >
+      <BackButton
+        onClick={() =>
+          setPage("home")
+        }
+      />
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 30, fontWeight: 700 }}>
+      {/* HEADER */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent:
+            "space-between",
+          alignItems: "center",
+          marginBottom: 24,
+        }}
+      >
+        <h1
+          style={{
+            fontFamily:
+              "var(--font-display)",
+            fontSize: 30,
+            fontWeight: 700,
+          }}
+        >
           ♥ My Wishlist
-          <span style={{ fontSize: 16, fontWeight: 400, color: "var(--gray-400)", marginLeft: 10 }}>
+
+          <span
+            style={{
+              fontSize: 16,
+              fontWeight: 400,
+              color:
+                "var(--gray-400)",
+              marginLeft: 10,
+            }}
+          >
             ({items.length} items)
           </span>
         </h1>
+
         {items.length > 0 && (
           <button
             className="btn-ghost"
-            style={{ color: "var(--red-400)", fontSize: 13 }}
-            onClick={() => { setWishlist([]); addToast("Wishlist cleared", "success"); }}
-          >Clear all</button>
+            style={{
+              color:
+                "var(--red-400)",
+              fontSize: 13,
+            }}
+            onClick={() => {
+              setWishlist([]);
+
+              addToast(
+                "Wishlist cleared",
+                "success"
+              );
+            }}
+          >
+            Clear all
+          </button>
         )}
       </div>
 
-      {items.length === 0 ? (
-        <EmptyState emoji="💔" title="Your wishlist is empty" sub="Browse listings and tap the heart icon to save items." />
+      {/* LOADING */}
+      {loading ? (
+        <div
+          style={{
+            textAlign: "center",
+            padding: 40,
+            fontSize: 18,
+          }}
+        >
+          Loading wishlist...
+        </div>
+      ) : items.length === 0 ? (
+        /* EMPTY */
+        <EmptyState
+          emoji="💔"
+          title="Your wishlist is empty"
+          sub="Browse listings and tap the heart icon to save items."
+        />
       ) : (
+        /* PRODUCTS */
         <div className="products-grid">
-          {items.map(p => (
-            <div key={p.id} className="product-card">
-              <div className="product-img"><span>{p.emoji}</span></div>
-              <div className="product-body">
-                <span className={`badge badge-${p.condition.toLowerCase()}`}>{p.condition}</span>
-                <p className="product-title">{p.title}</p>
-                <div className="product-prices">
-                  <span className="price-original">₹{p.original}</span>
-                  <span className="price-selling">₹{p.price}</span>
-                </div>
-                <p style={{ fontSize: 12, color: "var(--gray-400)" }}>by {p.seller}</p>
+          {items.map((p) => (
+            <div
+              key={p._id}
+              className="product-card"
+            >
+              {/* IMAGE */}
+              <div
+                className="product-img"
+              >
+                <img
+                  src={
+                    p.images?.[0]
+                  }
+                  alt={p.title}
+                  className="product-image"
+                  style={{
+                    width: "100%",
+                    height: 200,
+                    objectFit:
+                      "cover",
+                    borderRadius: 12,
+                  }}
+                />
               </div>
-              <div className="product-footer" style={{ flexDirection: "column", gap: 6 }}>
+
+              {/* BODY */}
+              <div className="product-body">
+                <span
+                  className={`badge badge-${p.status}`}
+                >
+                  {p.status}
+                </span>
+
+                <p className="product-title">
+                  {p.title}
+                </p>
+
+                <div className="product-prices">
+                  <span className="price-selling">
+                    ₹{p.price}
+                  </span>
+                </div>
+
+                <p
+                  style={{
+                    fontSize: 12,
+                    color:
+                      "var(--gray-400)",
+                  }}
+                >
+                  by{" "}
+                  {p.seller
+                    ?.name ||
+                    "Unknown"}
+                </p>
+              </div>
+
+              {/* FOOTER */}
+              <div
+                className="product-footer"
+                style={{
+                  flexDirection:
+                    "column",
+                  gap: 6,
+                }}
+              >
                 <button
                   className="btn-primary"
-                  style={{ justifyContent: "center", fontSize: 13, padding: "8px" }}
-                  onClick={() => viewProduct(p)}
-                >View Details</button>
+                  style={{
+                    justifyContent:
+                      "center",
+                    fontSize: 13,
+                    padding: "8px",
+                  }}
+                  onClick={() =>
+                    viewProduct(
+                      p
+                    )
+                  }
+                >
+                  View Details
+                </button>
+
                 <button
                   className="btn-ghost"
-                  style={{ color: "var(--red-400)", fontSize: 12, textAlign: "center" }}
-                  onClick={() => removeFromWishlist(p.id)}
-                >✕ Remove from Wishlist</button>
+                  style={{
+                    color:
+                      "var(--red-400)",
+                    fontSize: 12,
+                    textAlign:
+                      "center",
+                  }}
+                  onClick={() =>
+                    removeFromWishlist(
+                      p._id
+                    )
+                  }
+                >
+                  ✕ Remove from
+                  Wishlist
+                </button>
               </div>
             </div>
           ))}

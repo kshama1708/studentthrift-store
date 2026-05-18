@@ -22,11 +22,26 @@ const userSchema = new mongoose.Schema(
       minlength: [6, "Password must be at least 6 characters"],
       select: false,
     },
-    status: {
-      type: String,
-      enum: ["active", "blocked"],
-      default: "active",
+    notifications: [
+  {
+    message: String,
+    createdAt: {
+      type: Date,
+      default: Date.now,
     },
+  },
+],
+    status: {
+  type: String,
+  enum: ["active", "blocked"],
+  default: "active",
+},
+  role: {
+  type: String,
+  enum: ["user", "admin"],
+  default: "user",
+},
+
     avatar: {
       type: String,
       default: "",
