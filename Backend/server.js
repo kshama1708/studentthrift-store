@@ -21,17 +21,13 @@ const app = express();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ── Middleware ────────────────────────────────────────────────
-app.use(
-  cors({
-    origin: [
-      "http://localhost:3000",
-      "http://localhost:3001",
-      "http://localhost:5000",
-      process.env.FRONTEND_URL,
-    ],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    process.env.FRONTEND_URL,
+  ],
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
