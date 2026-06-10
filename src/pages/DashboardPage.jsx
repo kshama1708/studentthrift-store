@@ -2,29 +2,54 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
 import { StatCard, ProductCard } from "../components/UI";
-import SettingsContent from "./SettingsPage";
 
 const API =
-  import.meta.env.VITE_API_URL || "http://localhost:5000";
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:5000";
 
 const TABS = [
-  { key: "dashboard", icon: "📊", label: "Dashboard" },
-  { key: "my-listings", icon: "📦", label: "My Listings" },
-  { key: "wishlist", icon: "♥", label: "Wishlist" },
-  { key: "chat", icon: "💬", label: "Chats" },
-  { key: "settings", icon: "⚙️", label: "Settings" },
+  {
+    key: "dashboard",
+    icon: "📊",
+    label: "Dashboard",
+  },
+  {
+    key: "my-listings",
+    icon: "📦",
+    label: "My Listings",
+  },
+  {
+    key: "wishlist",
+    icon: "♥",
+    label: "Wishlist",
+  },
 ];
 
-// ── Overview Tab ─────────────────────────────
-function OverviewTab({ products }) {
+// ================= OVERVIEW =================
+function OverviewTab({
+  products,
+}) {
+
+  const soldCount =
+    products.filter(
+      (p) => p.isSold
+    ).length;
+
+  const wishlistCount =
+    JSON.parse(
+      localStorage.getItem(
+        "wishlist"
+      ) || "[]"
+    ).length;
+
   return (
     <>
       <h1
         style={{
-          fontFamily: "var(--font-display)",
+          fontFamily:
+            "var(--font-display)",
           fontSize: 26,
           fontWeight: 700,
-          marginBottom: 24,
         }}
       >
         Overview
@@ -33,87 +58,104 @@ function OverviewTab({ products }) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(160px, 1fr))",
           gap: 16,
-          marginBottom: 32,
+          marginTop: 20,
         }}
       >
         <StatCard
           icon="📦"
           label="Items Posted"
-          value={products.length}
+          value={
+            products.length
+          }
         />
 
         <StatCard
-          icon="✅"
+          icon="💰"
           label="Items Sold"
-          value="0"
+          value={soldCount}
         />
 
         <StatCard
           icon="♥"
           label="Wishlist"
-          value="0"
-        />
-
-        <StatCard
-          icon="💬"
-          label="Active Chats"
-          value="0"
+          value={
+            wishlistCount
+          }
         />
       </div>
     </>
   );
 }
 
-// ── My Listings Tab ──────────────────────────
+// ================= MY LISTINGS =================
 function MyListingsTab({
   setPage,
   products,
   setProducts,
   addToast,
 }) {
-  const handleDelete = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
 
-      await axios.delete(
-        `${API}/api/products/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  const handleDelete =
+    async (id) => {
 
-      setProducts(
-        products.filter((p) => p._id !== id)
-      );
+      try {
 
-      addToast?.("Product deleted", "success");
+        const token =
+          localStorage.getItem(
+            "token"
+          );
 
-    } catch (err) {
-      console.log(err);
+        await axios.delete(
+          `${API}/api/products/${id}`,
+          {
+            headers: {
+              Authorization:
+                `Bearer ${token}`,
+            },
+          }
+        );
 
-      addToast?.("Delete failed", "error");
-    }
-  };
+        setProducts(
+          products.filter(
+            (p) =>
+              p._id !== id
+          )
+        );
+
+        addToast?.(
+          "Product deleted",
+          "success"
+        );
+
+      } catch (err) {
+
+        console.log(err);
+
+        addToast?.(
+          "Delete failed",
+          "error"
+        );
+      }
+    };
 
   return (
     <>
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 24,
+          justifyContent:
+            "space-between",
+          marginBottom: 20,
         }}
       >
         <h1
           style={{
-            fontFamily: "var(--font-display)",
+            fontFamily:
+              "var(--font-display)",
             fontSize: 26,
-            fontWeight: 700,
           }}
         >
           My Listings
@@ -121,7 +163,11 @@ function MyListingsTab({
 
         <button
           className="btn-primary"
-          onClick={() => setPage("add-product")}
+          onClick={() =>
+            setPage(
+              "add-product"
+            )
+          }
         >
           + Add New
         </button>
@@ -129,9 +175,12 @@ function MyListingsTab({
 
       <div
         className="card"
-        style={{ overflowX: "auto" }}
+        style={{
+          overflowX: "auto",
+        }}
       >
         <table className="data-table">
+
           <thead>
             <tr>
               <th>Item</th>
@@ -143,137 +192,340 @@ function MyListingsTab({
           </thead>
 
           <tbody>
-            {products.length === 0 ? (
+
+            {products.length ===
+            0 ? (
+
               <tr>
                 <td
                   colSpan="5"
                   style={{
-                    textAlign: "center",
+                    textAlign:
+                      "center",
                     padding: 20,
                   }}
                 >
                   No listings found
                 </td>
               </tr>
+
             ) : (
-              products.map((p) => (
-                <tr key={p._id}>
-                  <td>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 10,
-                      }}
-                    >
-                      <img
-                        src={
-                          p.images?.[0]
-                            ? `${API}/${p.images[0]}`
-                            : "https://via.placeholder.com/60"
-                        }
-                        alt={p.title}
-                        style={{
-                          width: 50,
-                          height: 50,
-                          objectFit: "cover",
-                          borderRadius: 8,
-                        }}
-                      />
 
-                      <span
-                        style={{ fontWeight: 500 }}
-                      >
-                        {p.title}
-                      </span>
-                    </div>
-                  </td>
-
-                  <td>{p.category}</td>
-
-                  <td
-                    style={{
-                      color: "var(--green-500)",
-                      fontWeight: 600,
-                    }}
+              products.map(
+                (p) => (
+                  <tr
+                    key={p._id}
                   >
-                    ₹{p.price}
-                  </td>
 
-                  <td>
-                    <span className="badge badge-approved">
-                      Active
-                    </span>
-                  </td>
+                    <td>
+                      <div
+                        style={{
+                          display:
+                            "flex",
+                          gap: 10,
+                          alignItems:
+                            "center",
+                        }}
+                      >
+                        <img
+                          src={
+                            p.images?.[0]
+                              ? `${API}/${p.images[0]}`
+                              : "https://via.placeholder.com/60"
+                          }
+                          alt={
+                            p.title
+                          }
+                          style={{
+                            width: 50,
+                            height: 50,
+                            borderRadius: 8,
+                            objectFit:
+                              "cover",
+                          }}
+                        />
 
-                  <td>
-                    <button
-                      onClick={() =>
-                        handleDelete(p._id)
+                        {p.title}
+                      </div>
+                    </td>
+
+                    <td>
+                      {
+                        p.category
                       }
+                    </td>
+
+                    <td
                       style={{
-                        background: "red",
-                        color: "#fff",
-                        border: "none",
-                        padding: "8px 12px",
-                        borderRadius: 8,
-                        cursor: "pointer",
+                        color:
+                          "green",
+                        fontWeight: 600,
                       }}
                     >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))
+                      ₹{p.price}
+                    </td>
+
+                    <td>
+                      <div
+                        style={{
+                          display:
+                            "flex",
+                          flexDirection:
+                            "column",
+                          gap: 4,
+                        }}
+                      >
+                        <span
+                          className={`badge badge-${p.status}`}
+                        >
+                          {
+                            p.status
+                          }
+                        </span>
+
+                        <span
+                          style={{
+                            fontSize: 12,
+                            color:
+                              p.isSold
+                                ? "red"
+                                : "green",
+                          }}
+                        >
+                          {p.isSold
+                            ? "🔴 SOLD"
+                            : "🟢 AVAILABLE"}
+                        </span>
+                      </div>
+                    </td>
+
+                    <td>
+                      <button
+                        disabled={
+                          p.isSold
+                        }
+                        onClick={() =>
+                          handleDelete(
+                            p._id
+                          )
+                        }
+                        style={{
+                          background:
+                            p.isSold
+                              ? "gray"
+                              : "red",
+                          color:
+                            "#fff",
+                          border:
+                            "none",
+                          padding:
+                            "8px 12px",
+                          borderRadius: 8,
+                          cursor:
+                            p.isSold
+                              ? "not-allowed"
+                              : "pointer",
+                        }}
+                      >
+                        {p.isSold
+                          ? "Sold"
+                          : "Delete"}
+                      </button>
+                    </td>
+
+                  </tr>
+                )
+              )
+
             )}
+
           </tbody>
+
         </table>
       </div>
     </>
   );
 }
 
-// ── Wishlist Tab ─────────────────────────────
-function WishlistTab({ setPage, products }) {
+// ================= WISHLIST =================
+function WishlistTab({
+  setPage,
+  wishlist,
+  setWishlist,
+  setSelectedProduct,
+  addToast,
+}) {
+
+  const [items, setItems] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  // FETCH PRODUCTS
+  useEffect(() => {
+
+    const fetchWishlistProducts =
+      async () => {
+
+        try {
+
+          setLoading(true);
+
+          const res =
+            await axios.get(
+              `${API}/api/products`
+            );
+
+          const allProducts =
+            res.data.products ||
+            [];
+
+          const wishlistProducts =
+            allProducts.filter(
+              (p) =>
+                wishlist.includes(
+                  p._id
+                )
+            );
+
+          setItems(
+            wishlistProducts
+          );
+
+        } catch (error) {
+
+          console.log(error);
+
+        } finally {
+
+          setLoading(false);
+
+        }
+      };
+
+    fetchWishlistProducts();
+
+  }, [wishlist]);
+
+  // REMOVE
+  const removeFromWishlist =
+    (id) => {
+
+      setWishlist((w) =>
+        w.filter(
+          (x) => x !== id
+        )
+      );
+
+      addToast?.(
+        "Removed from wishlist",
+        "success"
+      );
+    };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <>
       <h1
         style={{
-          fontFamily: "var(--font-display)",
+          fontFamily:
+            "var(--font-display)",
           fontSize: 26,
-          fontWeight: 700,
-          marginBottom: 24,
+          marginBottom: 20,
         }}
       >
         Wishlist
       </h1>
 
       <div className="products-grid">
-        {products.length === 0 ? (
-          <p>No wishlist items</p>
+
+        {items.length === 0 ? (
+
+          <p>
+            No wishlist items
+          </p>
+
         ) : (
-          products.map((p) => (
-            <ProductCard
+
+          items.map((p) => (
+
+            <div
               key={p._id}
-              product={p}
-              onView={() =>
-                setPage("product-detail")
-              }
-            />
+              style={{
+                position:
+                  "relative",
+              }}
+            >
+
+              <ProductCard
+                product={p}
+                onView={() => {
+
+                  setSelectedProduct(
+                    p
+                  );
+
+                  setPage(
+                    "product-detail"
+                  );
+                }}
+              />
+
+              <button
+                onClick={() =>
+                  removeFromWishlist(
+                    p._id
+                  )
+                }
+                style={{
+                  position:
+                    "absolute",
+                  top: 10,
+                  right: 10,
+                  background:
+                    "red",
+                  color:
+                    "#fff",
+                  border:
+                    "none",
+                  padding:
+                    "6px 10px",
+                  borderRadius: 8,
+                  cursor:
+                    "pointer",
+                  fontSize: 12,
+                }}
+              >
+                Remove
+              </button>
+
+            </div>
+
           ))
         )}
+
       </div>
     </>
   );
 }
 
-// ── Dashboard Page ───────────────────────────
+// ================= MAIN DASHBOARD =================
 export default function DashboardPage({
   setPage,
   addToast,
+  setSelectedProduct,
+  wishlist,
+  setWishlist,
 }) {
+
   const [tab, setTab] =
-    useState("dashboard");
+    useState(
+      "dashboard"
+    );
 
   const [products, setProducts] =
     useState([]);
@@ -282,117 +534,105 @@ export default function DashboardPage({
     useState(true);
 
   const user = JSON.parse(
-    localStorage.getItem("user")
+    localStorage.getItem(
+      "user"
+    )
   );
 
+  const fetchMyProducts =
+    useCallback(
+      async () => {
 
-const fetchMyProducts = useCallback(async () => {
-  try {
-    const token = localStorage.getItem("token");
+        try {
 
-    const response = await axios.get(
-      `${API}/api/products/my-products`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+          const token =
+            localStorage.getItem(
+              "token"
+            );
+
+          const res =
+            await axios.get(
+              `${API}/api/products/my-products`,
+              {
+                headers: {
+                  Authorization:
+                    `Bearer ${token}`,
+                },
+              }
+            );
+
+          setProducts(
+            res.data.products ||
+              []
+          );
+
+        } catch (err) {
+
+          console.log(err);
+
+          addToast?.(
+            "Failed to fetch products",
+            "error"
+          );
+
+        } finally {
+
+          setLoading(false);
+
+        }
+      },
+      [addToast]
     );
 
-    setProducts(response.data.products || []);
-  } catch (err) {
-    console.log(err);
-    addToast?.("Failed to fetch products", "error");
-  } finally {
-    setLoading(false);
-  }
-}, [addToast]);
+  useEffect(() => {
 
+    fetchMyProducts();
 
-  const goTo = (key) => {
-    if (key === "chat") {
-      setPage("chat");
-      return;
-    }
-
-    setTab(key);
-  };
- useEffect(() => {
-  fetchMyProducts();
-}, [fetchMyProducts]);
+  }, [fetchMyProducts]);
 
   return (
     <div
       className="page"
       style={{
         display: "flex",
-        minHeight: "calc(100vh - 64px)",
+        minHeight:
+          "100vh",
       }}
     >
-      {/* Sidebar */}
+
+      {/* SIDEBAR */}
       <div className="sidebar">
-        <p
+
+        <div
           style={{
-            fontFamily:
-              "var(--font-display)",
-            fontSize: 16,
+            padding: 12,
             fontWeight: 700,
-            color: "var(--green-600)",
-            padding: "0 12px",
-            marginBottom: 12,
           }}
         >
           My Account
-        </p>
+        </div>
 
-        {/* User Card */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            padding: "10px 12px",
-            marginBottom: 16,
-            background: "var(--green-50)",
-            borderRadius:
-              "var(--radius-sm)",
+            padding: 12,
+            background:
+              "#f2f2f2",
+            borderRadius: 8,
           }}
         >
-          <div
-            className="avatar"
-            style={{
-              width: 40,
-              height: 40,
-              fontSize: 16,
-            }}
-          >
-            {user?.name
-              ?.charAt(0)
-              ?.toUpperCase()}
+          <div>
+            {user?.name}
           </div>
 
-          <div>
-            <p
-              style={{
-                fontSize: 13,
-                fontWeight: 600,
-              }}
-            >
-              {user?.name}
-            </p>
-
-            <p
-              style={{
-                fontSize: 11,
-                color: "var(--gray-400)",
-              }}
-            >
-              {user?.email}
-            </p>
+          <div
+            style={{
+              fontSize: 12,
+            }}
+          >
+            {user?.email}
           </div>
         </div>
 
-        {/* Tabs */}
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -401,53 +641,82 @@ const fetchMyProducts = useCallback(async () => {
                 ? "active"
                 : ""
             }`}
-            onClick={() => goTo(t.key)}
+            onClick={() =>
+              setTab(t.key)
+            }
           >
-            <span>{t.icon}</span>
+            {t.icon}{" "}
             {t.label}
           </button>
         ))}
+
       </div>
 
-      {/* Main Content */}
+      {/* CONTENT */}
       <div
         style={{
           flex: 1,
-          padding: "32px 28px",
-          overflowY: "auto",
+          padding: 30,
         }}
       >
+
         {loading ? (
+
           <p>Loading...</p>
+
         ) : (
+
           <>
-            {tab === "dashboard" && (
+            {tab ===
+              "dashboard" && (
               <OverviewTab
-                products={products}
+                products={
+                  products
+                }
               />
             )}
 
-            {tab === "my-listings" && (
+            {tab ===
+              "my-listings" && (
               <MyListingsTab
-                setPage={setPage}
-                products={products}
-                setProducts={setProducts}
-                addToast={addToast}
+                setPage={
+                  setPage
+                }
+                products={
+                  products
+                }
+                setProducts={
+                  setProducts
+                }
+                addToast={
+                  addToast
+                }
               />
             )}
 
-            {tab === "wishlist" && (
+            {tab ===
+              "wishlist" && (
               <WishlistTab
-                setPage={setPage}
-                products={products}
+                setPage={
+                  setPage
+                }
+                wishlist={
+                  wishlist
+                }
+                setWishlist={
+                  setWishlist
+                }
+                setSelectedProduct={
+                  setSelectedProduct
+                }
+                addToast={
+                  addToast
+                }
               />
-            )}
-
-            {tab === "settings" && (
-              <SettingsContent />
             )}
           </>
         )}
+
       </div>
     </div>
   );

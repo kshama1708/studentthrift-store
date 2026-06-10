@@ -1,6 +1,6 @@
 import { Avatar } from "./UI";
 
-export default function Navbar({ page, setPage, user, setUser }) {
+export default function Navbar({ page, setPage, user, setUser, cart })  {
   return (
     <nav className="navbar">
       {/* Left: logo + links */}
@@ -23,10 +23,6 @@ export default function Navbar({ page, setPage, user, setUser }) {
                 className={`btn-ghost nav-link ${page === "add-product" ? "active" : ""}`}
                 onClick={() => setPage("add-product")}
               >Sell</button>
-              <button
-                className={`btn-ghost nav-link ${page === "chat" ? "active" : ""}`}
-                onClick={() => setPage("chat")}
-              >Chats</button>
             </>
           )}
         </div>
@@ -37,7 +33,44 @@ export default function Navbar({ page, setPage, user, setUser }) {
         {user ? (
           <>
             <button className="btn-ghost" onClick={() => setPage("wishlist")}>♥ Wishlist</button>
-          
+         <div style={{ position: "relative", display: "inline-block" }}>
+<div style={{ position: "relative" }}>
+  <button
+    className="btn-ghost"
+    onClick={() => setPage("cart")}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 6,
+    }}
+  >
+    🛒 Cart
+  </button>
+
+  {cart?.length > 0 && (
+    <span
+      style={{
+        position: "absolute",
+        top: -6,
+        right: -10,
+        background: "red",
+        color: "white",
+        fontSize: 11,
+        width: 18,
+        height: 18,
+        borderRadius: "50%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontWeight: "bold",
+      }}
+    >
+      {cart.length}
+    </span>
+  )}
+</div>
+
+</div>
             <button
               className="btn-ghost"
               onClick={() => setPage("dashboard")}

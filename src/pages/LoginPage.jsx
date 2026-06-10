@@ -117,9 +117,37 @@ const handleLogin = async () => {
               />
               Remember me
             </label>
-            <span style={{ fontSize: 13, color: "var(--green-500)", cursor: "pointer", fontWeight: 500 }}>
-              Forgot password?
-            </span>
+           <span
+  style={{
+    fontSize: 13,
+    color: "var(--green-500)",
+    cursor: "pointer",
+    fontWeight: 500,
+  }}
+  onClick={async () => {
+    if (!email) {
+      addToast("Enter your email first", "error");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/forgot-password",
+        { email }
+      );
+
+      addToast(res.data.message, "success");
+    } catch (err) {
+      addToast(
+        err.response?.data?.message ||
+          "Failed to send reset link",
+        "error"
+      );
+    }
+  }}
+>
+  Forgot password?
+</span>
           </div>
 
           <button

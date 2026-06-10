@@ -1,6 +1,6 @@
 const cards = [
   { icon: "🎯", title: "Our Mission", desc: "Make quality academic resources accessible to every student, regardless of their financial background, by creating an affordable secondhand marketplace." },
-  { icon: "👁", title: "Our Vision",  desc: "A campus where no student has to choose between textbooks and meals — where sharing resources creates a stronger, kinder academic community." },
+  { icon: "👁", title: "Our Vision",  desc: "A platform where students can access what they need without financial stress, where sharing resources makes education more affordable and inclusive." },
   { icon: "💚", title: "Why We Exist", desc: "We noticed students spending thousands on books and equipment used for just one semester. There had to be a better way. The Thrift Store is that way." },
   { icon: "💰", title: "How We Save You Money", desc: "Average students save ₹3,000–8,000 per semester by buying used. Our platform makes it safe, easy, and fast to find what you need at the right price." },
 ];
@@ -29,7 +29,7 @@ export default function AboutPage() {
 
         <p style={{ color: "var(--gray-500)", fontSize: 16, maxWidth: 560, margin: "0 auto", lineHeight: 1.7 }}>
           The Thrift Store is a student-first marketplace that makes academic life more
-          affordable by connecting buyers and sellers on campus.
+          affordable by connecting buyers and sellers.
         </p>
       </div>
 

@@ -33,7 +33,7 @@ export default function Footer() {
 
         <div>
           <p style={{ fontWeight: 600, color: "#fff", marginBottom: 10, fontSize: 13 }}>Contact</p>
-          <p style={{ fontSize: 13, marginBottom: 4 }}>📧 support@thriftstore.edu</p>
+          <p style={{ fontSize: 13, marginBottom: 4 }}>📧 supportthriftstore@gmail.com</p>
           <p style={{ fontSize: 13, marginBottom: 4 }}>📞 +91 98765 43210</p>
         </div>
       </div>
@@ -44,7 +44,7 @@ export default function Footer() {
           textAlign: "center", fontSize: 12, color: "rgba(255,255,255,0.4)",
         }}
       >
-        © 2024 The Thrift Store. Made with 💚 for students.
+        © 2026 The Thrift Store. Made with 💚 for students.
       </div>
     </footer>
   );

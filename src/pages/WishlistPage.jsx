@@ -9,7 +9,9 @@ import {
   BackButton,
   EmptyState,
 } from "../components/UI";
-
+const API =
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:5000";
 export default function WishlistPage({
   setPage,
   wishlist,
@@ -179,20 +181,21 @@ export default function WishlistPage({
               <div
                 className="product-img"
               >
-                <img
-                  src={
-                    p.images?.[0]
-                  }
-                  alt={p.title}
-                  className="product-image"
-                  style={{
-                    width: "100%",
-                    height: 200,
-                    objectFit:
-                      "cover",
-                    borderRadius: 12,
-                  }}
-                />
+              <img
+  src={
+    p.images?.[0]
+      ? `${API}/${p.images[0]}`
+      : "https://via.placeholder.com/300"
+  }
+  alt={p.title}
+  className="product-image"
+  style={{
+    width: "100%",
+    height: 200,
+    objectFit: "cover",
+    borderRadius: 12,
+  }}
+/>
               </div>
 
               {/* BODY */}

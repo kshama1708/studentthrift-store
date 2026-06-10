@@ -1,11 +1,11 @@
 export const PRODUCTS = [
   { id: 1, title: "Engineering Mathematics Vol.1", category: "Books", emoji: "📚", price: 120, original: 350, condition: "Used", rating: 4, seller: "Arjun K.", views: 45 },
-  { id: 2, title: "Casio FX-991EX Calculator", category: "Calculators", emoji: "🔢", price: 450, original: 800, condition: "Used", rating: 5, seller: "Priya M.", views: 78 },
+  { id: 2, title: "Casio FX-991EX Calculator", category: "Stationery", emoji: "🔢", price: 450, original: 800, condition: "Used", rating: 5, seller: "Priya M.", views: 78 },
   { id: 3, title: "JBL Earphones (barely used)", category: "Electronics", emoji: "🎧", price: 350, original: 900, condition: "Used", rating: 4, seller: "Rohit S.", views: 33 },
   { id: 4, title: "Data Structures Handwritten Notes", category: "Notes", emoji: "📝", price: 80, original: 200, condition: "New", rating: 5, seller: "Sneha P.", views: 91 },
   { id: 5, title: "Physics Textbook (NCERT)", category: "Books", emoji: "🔬", price: 95, original: 280, condition: "Used", rating: 3, seller: "Vikram R.", views: 22 },
   { id: 6, title: "Wooden Study Chair", category: "Furniture", emoji: "🪑", price: 800, original: 2500, condition: "Used", rating: 4, seller: "Meena T.", views: 57 },
-  { id: 7, title: "Scientific Calculator TI-84", category: "Calculators", emoji: "🧮", price: 900, original: 2200, condition: "New", rating: 5, seller: "Aditya N.", views: 112 },
+  { id: 7, title: "Scientific Calculator TI-84", category: "Stationery", emoji: "🎒", price: 900, original: 2200, condition: "New", rating: 5, seller: "Aditya N.", views: 112 },
   { id: 8, title: "Laptop Stand (Adjustable)", category: "Electronics", emoji: "💻", price: 250, original: 600, condition: "New", rating: 4, seller: "Kavya L.", views: 44 },
   { id: 9, title: "Organic Chemistry by Morrison", category: "Books", emoji: "⚗️", price: 180, original: 550, condition: "Used", rating: 4, seller: "Dev B.", views: 38 },
   { id: 10, title: "A3 Drawing Board", category: "Furniture", emoji: "🎨", price: 320, original: 700, condition: "Used", rating: 3, seller: "Riya C.", views: 29 },
@@ -19,7 +19,7 @@ export const CATEGORIES = [
   { name: "Electronics", emoji: "💡" },
   { name: "Notes", emoji: "📝" },
   { name: "Furniture", emoji: "🪑" },
-  { name: "Calculators", emoji: "🧮" },
+  { name: "Stationery", emoji: "🎒" },
 ];
 
 export const USERS = [

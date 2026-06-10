@@ -1,328 +1,168 @@
-import { useState } from "react";
-import { Toggle } from "../components/UI";
+// import { useState } from "react";
+// import axios from "axios";
+// import "../styles/settings.css";
 
-// SettingsContent is exported separately so DashboardPage can embed it inline
-export function SettingsContent({ addToast }) {
-  // Safely parse localStorage user
-  const storedUser = JSON.parse(
-    localStorage.getItem("user") || "{}"
-  );
+// const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-  // Profile state
-  const [profile, setProfile] = useState({
-    name: storedUser?.name || "",
-    email: storedUser?.email || "",
-    phone: storedUser?.phone || "",
-  });
+// export default function SettingsPage({ setPage, addToast = () => {} }) {
+//   const user = JSON.parse(localStorage.getItem("user") || "{}");
+//   const token = localStorage.getItem("token");
 
-  // Preferences state
-  const [toggles, setToggles] = useState({
-    notifications: true,
-    darkMode: false,
-    emailUpdates: true,
-  });
+//   const [profile, setProfile] = useState({
+//     name: user.name || "",
+//     email: user.email || "",
+//     phone: user.phone || "",
+//   });
 
-  // Toggle handler
-  const flip = (key) => {
-    setToggles((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  };
+//   const [passwords, setPasswords] = useState({
+//     currentPassword: "",
+//     newPassword: "",
+//     confirmPassword: "",
+//   });
 
-  // Save profile
-  const saveProfile = () => {
-    localStorage.setItem("user", JSON.stringify(profile));
-    addToast?.("Profile updated!", "success");
-  };
+//   const [profileLoading, setProfileLoading] = useState(false);
+//   const [passwordLoading, setPasswordLoading] = useState(false);
 
-  // Update password
-  const updatePassword = () => {
-    addToast?.("Password updated!", "success");
-  };
+//   // PROFILE UPDATE
+//   const updateProfile = async () => {
+//     try {
+//       setProfileLoading(true);
 
-  // Delete account
-  const deleteAccount = () => {
-    localStorage.removeItem("user");
-    addToast?.("Account deleted!", "error");
-  };
+//       const res = await axios.put(
+//         `${API}/api/auth/update-profile`,
+//         profile,
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
 
-  const preferenceItems = [
-    {
-      k: "notifications",
-      label: "Push Notifications",
-      desc: "Get alerts for new messages and offers",
-    },
-    {
-      k: "darkMode",
-      label: "Dark Mode",
-      desc: "Switch to a darker interface",
-    },
-    {
-      k: "emailUpdates",
-      label: "Email Updates",
-      desc: "Receive weekly deals in your inbox",
-    },
-  ];
+//       localStorage.setItem("user", JSON.stringify(res.data.user));
+//       addToast("Profile updated successfully", "success");
+//     } catch (err) {
+//       addToast(err.response?.data?.message || "Profile update failed", "error");
+//     } finally {
+//       setProfileLoading(false);
+//     }
+//   };
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 20,
-        maxWidth: 560,
-      }}
-    >
-      {/* ── Edit Profile ──────────────────────────────── */}
-      <div className="card" style={{ padding: 24 }}>
-        <h3
-          style={{
-            fontWeight: 600,
-            marginBottom: 16,
-            fontSize: 15,
-          }}
-        >
-          Edit Profile
-        </h3>
+//   // PASSWORD CHANGE
+//   const changePassword = async () => {
+//     if (!passwords.currentPassword || !passwords.newPassword) {
+//       return addToast("Fill all fields", "error");
+//     }
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-          }}
-        >
-          <input
-            className="input-field"
-            value={profile.name}
-            onChange={(e) =>
-              setProfile({
-                ...profile,
-                name: e.target.value,
-              })
-            }
-            placeholder="Full Name"
-          />
+//     if (passwords.newPassword !== passwords.confirmPassword) {
+//       return addToast("Passwords do not match", "error");
+//     }
 
-          <input
-            className="input-field"
-            value={profile.email}
-            onChange={(e) =>
-              setProfile({
-                ...profile,
-                email: e.target.value,
-              })
-            }
-            placeholder="Email"
-          />
+//     try {
+//       setPasswordLoading(true);
 
-          <input
-            className="input-field"
-            value={profile.phone}
-            onChange={(e) =>
-              setProfile({
-                ...profile,
-                phone: e.target.value,
-              })
-            }
-            placeholder="Phone number"
-          />
+//       await axios.put(
+//         `${API}/api/auth/change-password`,
+//         {
+//           currentPassword: passwords.currentPassword,
+//           newPassword: passwords.newPassword,
+//         },
+//         {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         }
+//       );
 
-          <button
-            className="btn-primary"
-            style={{ alignSelf: "flex-start" }}
-            onClick={saveProfile}
-          >
-            Save Changes
-          </button>
-        </div>
-      </div>
+//       addToast("Password updated successfully", "success");
 
-      {/* ── Change Password ───────────────────────────── */}
-      <div className="card" style={{ padding: 24 }}>
-        <h3
-          style={{
-            fontWeight: 600,
-            marginBottom: 16,
-            fontSize: 15,
-          }}
-        >
-          Change Password
-        </h3>
+//       setPasswords({
+//         currentPassword: "",
+//         newPassword: "",
+//         confirmPassword: "",
+//       });
+//     } catch (err) {
+//       addToast(err.response?.data?.message || "Password update failed", "error");
+//     } finally {
+//       setPasswordLoading(false);
+//     }
+//   };
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-          }}
-        >
-          <input
-            className="input-field"
-            type="password"
-            placeholder="Current password"
-          />
+//   const logout = () => {
+//     localStorage.clear();
+//     setPage("login");
+//   };
 
-          <input
-            className="input-field"
-            type="password"
-            placeholder="New password"
-          />
+//   return (
+//     <div className="settings-container">
+//       <h1 className="settings-title">Settings ⚙️</h1>
 
-          <input
-            className="input-field"
-            type="password"
-            placeholder="Confirm new password"
-          />
+//       {/* PROFILE CARD */}
+//       <div className="settings-card">
+//         <h2>Profile</h2>
 
-          <button
-            className="btn-primary"
-            style={{ alignSelf: "flex-start" }}
-            onClick={updatePassword}
-          >
-            Update Password
-          </button>
-        </div>
-      </div>
+//         <input
+//           value={profile.name}
+//           onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+//           placeholder="Name"
+//         />
 
-      {/* ── Preferences / Toggles ─────────────────────── */}
-      <div className="card" style={{ padding: 24 }}>
-        <h3
-          style={{
-            fontWeight: 600,
-            marginBottom: 16,
-            fontSize: 15,
-          }}
-        >
-          Preferences
-        </h3>
+//         <input
+//           value={profile.email}
+//           onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+//           placeholder="Email"
+//         />
 
-        {preferenceItems.map((item, index) => (
-          <div
-            key={item.k}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "12px 0",
-              borderBottom:
-                index !== preferenceItems.length - 1
-                  ? "1px solid var(--cream-100)"
-                  : "none",
-            }}
-          >
-            <div>
-              <p
-                style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                }}
-              >
-                {item.label}
-              </p>
+//         <input
+//           value={profile.phone}
+//           onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+//           placeholder="Phone"
+//         />
 
-              <p
-                style={{
-                  fontSize: 12,
-                  color: "var(--gray-400)",
-                }}
-              >
-                {item.desc}
-              </p>
-            </div>
+//         <button onClick={updateProfile} disabled={profileLoading}>
+//           {profileLoading ? "Saving..." : "Save Profile"}
+//         </button>
+//       </div>
 
-            <Toggle
-              on={toggles[item.k]}
-              onToggle={() => flip(item.k)}
-            />
-          </div>
-        ))}
-      </div>
+//       {/* PASSWORD CARD */}
+//       <div className="settings-card">
+//         <h2>Change Password</h2>
 
-      {/* ── Danger Zone ───────────────────────────────── */}
-      <div
-        className="card"
-        style={{
-          padding: 24,
-          border: "1px solid #fde8e8",
-        }}
-      >
-        <h3
-          style={{
-            fontWeight: 600,
-            marginBottom: 8,
-            fontSize: 15,
-            color: "var(--red-400)",
-          }}
-        >
-          Danger Zone
-        </h3>
+//         <input
+//           type="password"
+//           placeholder="Current password"
+//           value={passwords.currentPassword}
+//           onChange={(e) =>
+//             setPasswords({ ...passwords, currentPassword: e.target.value })
+//           }
+//         />
 
-        <p
-          style={{
-            fontSize: 13,
-            color: "var(--gray-500)",
-            marginBottom: 14,
-          }}
-        >
-          Once you delete your account, there is no going back.
-        </p>
+//         <input
+//           type="password"
+//           placeholder="New password"
+//           value={passwords.newPassword}
+//           onChange={(e) =>
+//             setPasswords({ ...passwords, newPassword: e.target.value })
+//           }
+//         />
 
-        <button
-          onClick={deleteAccount}
-          style={{
-            background: "var(--red-400)",
-            color: "#fff",
-            padding: "9px 18px",
-            borderRadius: "var(--radius-sm)",
-            fontSize: 13,
-            fontWeight: 500,
-            cursor: "pointer",
-            border: "none",
-          }}
-        >
-          Delete Account
-        </button>
-      </div>
-    </div>
-  );
-}
+//         <input
+//           type="password"
+//           placeholder="Confirm password"
+//           value={passwords.confirmPassword}
+//           onChange={(e) =>
+//             setPasswords({ ...passwords, confirmPassword: e.target.value })
+//           }
+//         />
 
-// Full page wrapper (used as standalone route)
-export default function SettingsPage({
-  setPage,
-  addToast,
-}) {
-  return (
-    <div
-      className="page"
-      style={{
-        padding: "32px 24px",
-        maxWidth: 700,
-        margin: "0 auto",
-      }}
-    >
-      <button
-        className="btn-ghost"
-        onClick={() => setPage("home")}
-        style={{ marginBottom: 20 }}
-      >
-        ← Back
-      </button>
+//         <button onClick={changePassword} disabled={passwordLoading}>
+//           {passwordLoading ? "Updating..." : "Update Password"}
+//         </button>
+//       </div>
 
-      <h1
-        style={{
-          fontFamily: "var(--font-display)",
-          fontSize: 30,
-          fontWeight: 700,
-          marginBottom: 24,
-        }}
-      >
-        Settings
-      </h1>
-
-      <SettingsContent addToast={addToast} />
-    </div>
-  );
-}
+//       {/* LOGOUT */}
+//       <button className="logout-btn" onClick={logout}>
+//         Logout
+//       </button>
+//     </div>
+//   );
+// }

@@ -15,11 +15,6 @@ const ADMIN_TABS = [
     label: "Manage Listings",
   },
   {
-    key: "users",
-    icon: "👥",
-    label: "Manage Users",
-  },
-  {
     key: "reports",
     icon: "📋",
     label: "Reports",
@@ -155,57 +150,6 @@ export default function AdminPanel({
     }
   };
 
-  // BLOCK / UNBLOCK USER
-  const toggleUserStatus = async (
-    user
-  ) => {
-    try {
-      setActionLoading(true);
-
-      const newStatus =
-        user.status === "active"
-          ? "blocked"
-          : "active";
-
-      await api.put(
-        `/admin/users/${user._id}/status`,
-        {
-          status: newStatus,
-        }
-      );
-
-      await fetchUsers();
-    } catch (error) {
-      console.log(
-        error.response?.data ||
-        error.message
-      );
-    } finally {
-      setActionLoading(false);
-    }
-  };
-  // DELETE USER
-  const deleteUser = async (id) => {
-    const ok = window.confirm(
-      "Delete this user?"
-    );
-
-    if (!ok) return;
-
-    try {
-      setActionLoading(true);
-
-      await api.delete(
-        `/admin/users/${id}`
-      );
-
-     await fetchUsers();
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setActionLoading(false);
-    }
-  };
 
   // FILTER PRODUCTS
   const filteredProducts = useMemo(() => {
@@ -219,9 +163,11 @@ export default function AdminPanel({
 
 
       const matchesStatus =
-        statusFilter === "all"
-          ? true
-          : p.status === statusFilter;
+  statusFilter === "all"
+    ? true
+    : statusFilter === "sold"
+  ? Boolean(p.isSold)
+    : p.status === statusFilter;
 
       return (
         matchesSearch &&
@@ -237,16 +183,10 @@ export default function AdminPanel({
   // REAL STATS
   const stats = {
     totalUsers: users.length,
-
     totalProducts: products.length,
-
-    approvedProducts: products.filter(
-      (p) => p.status === "approved"
-    ).length,
-
-    reports: products.filter(
-      (p) => p.status === "rejected"
-    ).length,
+    approvedProducts: products.filter(p => p.status === "approved").length,
+    rejectedProducts: products.filter(p => p.status === "rejected").length,
+    soldProducts: products.filter(p => p.isSold === true).length,
   };
 
   if (loading) {
@@ -340,13 +280,6 @@ export default function AdminPanel({
                 marginTop: 20,
               }}
             >
-              <StatCard
-                icon="👥"
-                label="Total Users"
-                value={
-                  stats.totalUsers
-                }
-              />
 
               <StatCard
                 icon="📦"
@@ -367,7 +300,12 @@ export default function AdminPanel({
               <StatCard
                 icon="🚨"
                 label="Rejected"
-                value={stats.reports}
+                value={stats.rejectedProducts}
+              />
+              <StatCard
+                icon="💰"
+                label="Sold Products"
+                value={stats.soldProducts}
               />
             </div>
           </>
@@ -420,6 +358,7 @@ export default function AdminPanel({
                 <option value="rejected">
                   Rejected
                 </option>
+                <option value="sold">Sold</option>
               </select>
             </div>
 
@@ -455,15 +394,22 @@ export default function AdminPanel({
                         }
                       </td>
 
-                      <td>
-                        <span
-                          className={`badge badge-${p.status}`}
-                        >
-                          {p.status}
-                        </span>
-                      </td>
+                      
+                       <td>
+  <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+    
+    <span className={`badge badge-${p.status}`}>
+      {p.status}
+    </span>
 
-                      <td>
+    <span style={{ fontSize: 12, color: p.isSold ? "red" : "green" }}>
+      {p.isSold ? "🔴 SOLD" : "🟢 AVAILABLE"}
+    </span>
+
+  </div>
+</td>
+
+                    <td>
                         ₹{p.price}
                       </td>
 
@@ -475,107 +421,43 @@ export default function AdminPanel({
                             gap: 6,
                           }}
                         >
-                          <button
-                            disabled={actionLoading}
-                            onClick={() =>
-                              approveProduct(p._id)
-                            }
-                          >
-                            Approve
-                          </button>
+                          <td>
+  {p.isSold ? (
+    <span style={{ color: "red", fontWeight: 600 }}>
+      SOLD - No actions allowed
+    </span>
+  ) : (
+    <div style={{ display: "flex", gap: 6 }}>
+      
+      <button
+        disabled={actionLoading}
+        onClick={() => approveProduct(p._id)}
+      >
+        Approve
+      </button>
 
-                          <button
-                            disabled={actionLoading}
-                            onClick={() =>
-                              rejectProduct(p._id)
-                            }
-                          >
-                            Reject
-                          </button>
+      <button
+        disabled={actionLoading}
+        onClick={() => rejectProduct(p._id)}
+      >
+        Reject
+      </button>
 
+      <button
+        disabled={actionLoading}
+        onClick={() => deleteProduct(p._id)}
+      >
+        Delete
+      </button>
 
-                          <button
-                            disabled={actionLoading}
-                            onClick={() =>
-                              deleteProduct(p._id)
-                            }
-                          >
-                            Delete
-                          </button>
+    </div>
+  )}
+</td>
                         </div>
                       </td>
                     </tr>
                   )
                 )}
-              </tbody>
-            </table>
-          </>
-        )}
-
-        {/* USERS */}
-        {tab === "users" && (
-          <>
-            <h1>Manage Users</h1>
-
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Role</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {users.map((u) => (
-                  <tr key={u._id}>
-                    <td>{u.name}</td>
-
-                    <td>{u.email}</td>
-
-                    <td>{u.role}</td>
-
-                    <td>
-                      <span
-                        className={`badge badge-${u.status || "active"}`}
-                      >
-                        {u.status || "active"}
-                      </span>
-                    </td>
-
-                    <td>
-                      <div
-                        style={{
-                          display:
-                            "flex",
-                          gap: 6,
-                        }}
-                      >
-                        <button
-                          disabled={actionLoading}
-                          onClick={() =>
-                            toggleUserStatus(u)
-                          }
-                        >
-                          {(u.status || "active") === "active"
-                            ? "Block"
-                            : "Unblock"}
-                        </button>
-
-                        <button
-                          disabled={actionLoading}
-                          onClick={() =>
-                            deleteUser(u._id)
-                          }
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
               </tbody>
             </table>
           </>
@@ -587,33 +469,25 @@ export default function AdminPanel({
             <h1>Reports</h1>
 
             <BarChart
-              data={[
-                {
-                  name: "Approved",
-                  val: products.filter(
-                    (p) =>
-                      p.status ===
-                      "approved"
-                  ).length,
-                },
-                {
-                  name: "Pending",
-                  val: products.filter(
-                    (p) =>
-                      p.status ===
-                      "pending"
-                  ).length,
-                },
-                {
-                  name: "Rejected",
-                  val: products.filter(
-                    (p) =>
-                      p.status ===
-                      "rejected"
-                  ).length,
-                },
-              ]}
-            />
+  data={[
+    {
+      name: "Approved",
+      val: products.filter(p => p.status === "approved").length,
+    },
+    {
+      name: "Pending",
+      val: products.filter(p => p.status === "pending").length,
+    },
+    {
+      name: "Rejected",
+      val: products.filter(p => p.status === "rejected").length,
+    },
+    {
+      name: "Sold",
+      val: products.filter(p => p.isSold).length,
+    },
+  ]}
+/>
           </>
         )}
       </div>

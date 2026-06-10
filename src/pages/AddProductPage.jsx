@@ -7,102 +7,105 @@ const CATEGORY_OPTIONS = [
   "Electronics",
   "Notes",
   "Furniture",
-  "Calculators",
+  "Stationery",
 ];
 
 export default function AddProductPage({
   setPage,
   addToast,
 }) {
-  const [form, setForm] = useState({
-    title: "",
-    description: "",
-    category: "",
-    condition: "Used",
-    price: "",
-  });
+ const [form, setForm] = useState({
+  title: "",
+  description: "",
+  category: "",
+  condition: "Used",
+  price: "",
+  address: "",
+});
 
   const [images, setImages] = useState([]);
 
   const set = (k, v) =>
     setForm((f) => ({ ...f, [k]: v }));
 
- const handleSubmit = async () => {
-  try {
+  const handleSubmit = async () => {
+    try {
 
-    const token =
-      localStorage.getItem("token");
+      const token =
+        localStorage.getItem("token");
 
-    // FORM DATA
-    const formData =
-      new FormData();
+      // FORM DATA
+      const formData =
+        new FormData();
 
-    formData.append(
-      "title",
-      form.title
-    );
-
-    formData.append(
-      "description",
-      form.description
-    );
-
-    formData.append(
-      "category",
-      form.category
-    );
-
-    formData.append(
-      "price",
-      form.price
-    );
-
-    // IMAGES
-    for (
-      let i = 0;
-      i < images.length;
-      i++
-    ) {
       formData.append(
-        "images",
-        images[i]
+        "title",
+        form.title
+      );
+
+      formData.append(
+        "description",
+        form.description
+      );
+      formData.append(
+        "address",
+        form.address
+      );
+      formData.append(
+        "category",
+        form.category
+      );
+      formData.append(
+  "condition",
+  form.condition
+);
+
+      formData.append(
+        "price",
+        form.price
+      );
+
+      // IMAGES
+      for (
+        let i = 0;
+        i < images.length;
+        i++
+      ) {
+        formData.append(
+          "images",
+          images[i]
+        );
+      }
+
+      await axios.post(
+        "http://localhost:5000/api/products",
+        formData,
+        {
+          headers: {
+            Authorization:
+              `Bearer ${token}`,
+            "Content-Type":
+              "multipart/form-data",
+          },
+        }
+      );
+
+      setPage("dashboard");
+
+    } catch (err) {
+
+      console.log(
+        err.response?.data ||
+        err.message
+      );
+
+      addToast(
+        err.response?.data?.message ||
+        "Failed to add product",
+        "error"
       );
     }
-
-    await axios.post(
-      "http://localhost:5000/api/products",
-      formData,
-      {
-        headers: {
-          Authorization:
-            `Bearer ${token}`,
-          "Content-Type":
-            "multipart/form-data",
-        },
-      }
-    );
-
-    addToast(
-      "Product added!",
-      "success"
-    );
-
-    setPage("dashboard");
-
-  } catch (err) {
-
-    console.log(
-      err.response?.data ||
-      err.message
-    );
-
-    addToast(
-      err.response?.data?.message ||
-      "Failed to add product",
-      "error"
-    );
-  }
-};
+  };
 
   return (
     <div
@@ -137,34 +140,104 @@ export default function AddProductPage({
       </p>
 
       <div className="card" style={{ padding: 28 }}>
-        
+
         {/* Upload */}
         <label
-          style={{
-            border: "2px dashed var(--cream-300)",
-            borderRadius: "var(--radius-md)",
-            padding: 32,
-            textAlign: "center",
-            marginBottom: 20,
-            cursor: "pointer",
-            display: "block",
-          }}
-        >
-          <div style={{ fontSize: 36 }}>📸</div>
+  style={{
+    border: "2px dashed var(--cream-300)",
+    borderRadius: "var(--radius-md)",
+    padding: 32,
+    textAlign: "center",
+    marginBottom: 20,
+    cursor: "pointer",
+    display: "block",
+  }}
+>
+  <div style={{ fontSize: 36 }}>
+    📸
+  </div>
 
-          <p style={{ fontWeight: 500 }}>
-            Click to upload images
-          </p>
+  <p style={{ fontWeight: 500 }}>
+    Click to upload images
+  </p>
 
-          <input
-            type="file"
-            multiple
-            hidden
-            onChange={(e) => {
-              setImages(Array.from(e.target.files));
-            }}
-          />
-        </label>
+  <p
+    style={{
+      fontSize: 13,
+      color: "#666",
+      marginTop: 6,
+    }}
+  >
+    Maximum 4 images allowed
+  </p>
+
+  {images.length > 0 && (
+    <p
+      style={{
+        fontSize: 13,
+        color: "green",
+        marginTop: 6,
+        fontWeight: 600,
+      }}
+    >
+      {images.length}/4 selected
+    </p>
+  )}
+
+  <input
+    type="file"
+    multiple
+    accept="image/*"
+    hidden
+    onChange={(e) => {
+
+      const files =
+        Array.from(
+          e.target.files
+        );
+
+      if (files.length > 4) {
+
+        addToast(
+          "You can upload maximum 4 images",
+          "error"
+        );
+
+        return;
+      }
+
+    setImages((prev) => {
+
+  const combined = [
+    ...prev,
+    ...files,
+  ];
+
+  const unique =
+    combined.filter(
+      (file, index, self) =>
+        index ===
+        self.findIndex(
+          (f) =>
+            f.name === file.name
+        )
+    );
+
+  if (unique.length > 4) {
+
+    addToast(
+      "Maximum 4 images allowed",
+      "error"
+    );
+
+    return prev;
+  }
+
+  return unique;
+});
+    }}
+  />
+</label>
 
         {/* Preview */}
         {images.length > 0 && (
@@ -199,7 +272,7 @@ export default function AddProductPage({
             gap: 16,
           }}
         >
-          
+
           {/* Title */}
           <input
             className="input-field"
@@ -264,6 +337,16 @@ export default function AddProductPage({
               </button>
             ))}
           </div>
+          {/* Address */}
+<textarea
+  className="input-field"
+  rows={3}
+  placeholder="Pickup address / meeting location"
+  value={form.address}
+  onChange={(e) =>
+    set("address", e.target.value)
+  }
+/>
 
           {/* Price */}
           <input
