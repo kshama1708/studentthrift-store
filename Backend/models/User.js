@@ -22,15 +22,6 @@ const userSchema = new mongoose.Schema(
       minlength: [6, "Password must be at least 6 characters"],
       select: false,
     },
-    notifications: [
-  {
-    message: String,
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-],
     status: {
   type: String,
   enum: ["active", "blocked"],
@@ -42,20 +33,12 @@ const userSchema = new mongoose.Schema(
   default: "user",
 },
 
-    avatar: {
-      type: String,
-      default: "",
-    },
     wishlist: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
       },
     ],
-    college: {
-      type: String,
-      default: "",
-    },
   },
   { timestamps: true }
 );

@@ -20,7 +20,7 @@ const sendToken = (user, statusCode, res) => {
 // POST /api/auth/register
 export const register = async (req, res) => {
   try {
-    const { name, email, password, college } = req.body;
+    const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: "Name, email, and password are required." });
@@ -76,6 +76,62 @@ export const login = async (req, res) => {
 
   }
 };
+
+// POST /api/auth/forgot-password
+export const forgotPassword =
+  async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Email is required.",
+        });
+      }
+
+      const user =
+        await User.findOne({
+          email,
+        }).select("+password");
+
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message:
+            "User not found.",
+        });
+      }
+
+      // TEMP PASSWORD
+      const newPassword =
+        "123456";
+
+      // SAVE NEW PASSWORD
+      user.password =
+        newPassword;
+
+      await user.save();
+
+      res.status(200).json({
+        success: true,
+        message:
+          "Password reset successful. New password is 123456",
+      });
+    } catch (err) {
+      console.log(
+        "FORGOT PASSWORD ERROR"
+      );
+
+      console.log(err);
+
+      res.status(500).json({
+        success: false,
+        message: err.message,
+      });
+    }
+  };
 
 // GET /api/auth/me
 export const getMe = async (req, res) => {

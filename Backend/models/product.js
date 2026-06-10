@@ -22,21 +22,30 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
+    address: {
+      type: String,
+      required: true,
+    },
+
     images: {
       type: [String],
       default: [],
     },
 
     status: {
-  type: String,
-  enum: [
-    "pending",
-    "approved",
-    "rejected",
-    "sold",
-  ],
-  default: "pending",
-},
+      type: String,
+      enum: [
+        "pending",
+        "approved",
+        "rejected",
+      ],
+      default: "pending",
+    },
+
+    isSold: {
+      type: Boolean,
+      default: false,
+    },
 
     seller: {
       type: mongoose.Schema.Types.ObjectId,

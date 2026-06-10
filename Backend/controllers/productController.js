@@ -7,11 +7,12 @@ export const addProduct = async (
 ) => {
   try {
     const {
-      title,
-      description,
-      price,
-      category,
-    } = req.body;
+  title,
+  description,
+  category,
+  price,
+  address,
+} = req.body;
 
     const images = req.files
       ? req.files.map(
@@ -25,6 +26,7 @@ export const addProduct = async (
         description,
         price,
         category,
+        address,
         images,
         seller: req.user._id,
       });
@@ -43,6 +45,7 @@ export const addProduct = async (
   }
 };
 // GET ALL PRODUCTS
+
 export const getProducts = async (
   req,
   res
@@ -50,12 +53,13 @@ export const getProducts = async (
   try {
 
     const products =
-      await Product.find({
+     await Product.find({
   status: "approved",
-}).populate(
-        "seller",
-        "name email"
-      );
+})
+        .populate(
+          "seller",
+          "name email address"
+        );
 
     res.json({
       success: true,
