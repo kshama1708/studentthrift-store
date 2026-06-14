@@ -4,7 +4,7 @@ import {
 import { useState } from "react";
 const API =
   process.env.REACT_APP_API_URL ||
-  "http://localhost:5000";
+  "https://studentthrift-store-backend.onrender.com";
   
 
 export default function ProductDetailPage({
@@ -55,7 +55,9 @@ const toggleWishlist = () => {
     "success"
   );
 };
-
+console.log(
+  `${API}/${product.images?.[0]}`
+);
 const orderNow = () => {
 
   if (!user) {

@@ -50,7 +50,8 @@ export const ProductCard = ({
       <img
         src={
           product.images?.[0]
-            ? `http://localhost:5000/${product.images[0]}`
+            ? `https://studentthrift-store-backend.onrender.com/${product.images[0]}`
+                       
             : "https://via.placeholder.com/300"
         }
         alt={product.title}
