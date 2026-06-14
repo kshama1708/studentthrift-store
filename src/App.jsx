@@ -23,7 +23,7 @@ import CheckoutPage from "./pages/CheckOutPages";
 
 import { PRODUCTS } from "./data/Data";
 const API =
-  import.meta.env.VITE_API_URL ||
+  process.env.REACT_APP_API_URL ||
   "http://localhost:5000";
 const HIDE_NAVBAR = ["login", "register", "admin", "adminLogin"];
 
