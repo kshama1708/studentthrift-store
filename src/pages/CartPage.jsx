@@ -86,7 +86,7 @@ export default function CartPage({ cart, setCart, setPage }) {
                   <img
                     src={
                       item.images?.[0]
-                        ? `http://localhost:5000/${item.images[0]}`
+                        ? `https://studentthrift-store-backend.onrender.com/${item.images[0]}`
                         : "https://via.placeholder.com/90"
                     }
                     alt={item.title}

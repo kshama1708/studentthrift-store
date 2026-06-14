@@ -9,12 +9,13 @@ export default function LoginPage({ setPage, setUser, addToast }) {
 
 const handleLogin = async () => {
   try {
-    const response = await axios.post(
-      "http://localhost:5000/api/auth/login",
-      {
-        email,
-        password: pwd,
-      }
+   const response = await axios.post(
+  `${process.env.REACT_APP_API_URL}/api/auth/login`,
+  {
+    email,
+    password: pwd,
+  }
+
     );
 
     // SAVE USER
@@ -131,10 +132,10 @@ const handleLogin = async () => {
     }
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/forgot-password",
-        { email }
-      );
+  const res = await axios.post(
+  `${process.env.REACT_APP_API_URL}/api/auth/forgot-password`,
+  { email }
+);
 
       addToast(res.data.message, "success");
     } catch (err) {

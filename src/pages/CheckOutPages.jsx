@@ -2,7 +2,7 @@ import { useState } from "react";
 import jsPDF from "jspdf";
 import "../styles/checkoutpage.css";
 const API =
-  import.meta.env.VITE_API_URL ||
+  process.env.REACT_APP_API_URL ||
   "http://localhost:5000";
 
 export default function CheckoutPage({

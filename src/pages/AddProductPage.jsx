@@ -77,18 +77,20 @@ export default function AddProductPage({
         );
       }
 
-      await axios.post(
-        "http://localhost:5000/api/products",
-        formData,
-        {
-          headers: {
-            Authorization:
-              `Bearer ${token}`,
-            "Content-Type":
-              "multipart/form-data",
-          },
-        }
-      );
+     const API =
+  process.env.REACT_APP_API_URL ||
+  "http://localhost:5000";
+
+await axios.post(
+  `${API}/api/products`,
+  formData,
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  }
+);
 
       setPage("dashboard");
 
