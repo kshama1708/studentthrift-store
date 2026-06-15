@@ -9,7 +9,11 @@ const CATEGORY_OPTIONS = [
   "Furniture",
   "Stationery",
 ];
-
+export const getImageUrl = (img) => {
+  if (!img) return "https://via.placeholder.com/300";
+  return `${API}${img.startsWith("/") ? "" : "/"}${img}`;
+};
+const API = process.env.REACT_APP_API_URL;
 export default function AddProductPage({
   setPage,
   addToast,
@@ -22,6 +26,8 @@ export default function AddProductPage({
   price: "",
   address: "",
 });
+
+
 
   const [images, setImages] = useState([]);
 
@@ -77,9 +83,7 @@ export default function AddProductPage({
         );
       }
 
-     const API =
-  process.env.REACT_APP_API_URL ||
-  "http://localhost:5000";
+    const API = process.env.REACT_APP_API_URL;
 
 await axios.post(
   `${API}/api/products`,

@@ -1,3 +1,4 @@
+const API = process.env.REACT_APP_API_URL;
 // ── Stars ────────────────────────────────────────────────────
 export const Stars = ({ n }) => (
   <div className="stars">
@@ -6,7 +7,10 @@ export const Stars = ({ n }) => (
     ))}
   </div>
 );
-
+const getImageUrl = (img) => {
+  if (!img) return "https://via.placeholder.com/300";
+  return new URL(img, API).href;
+};
 // ── Toast ────────────────────────────────────────────────────
 export const Toast = ({ toasts }) => (
   <div className="toast-container">
@@ -48,12 +52,7 @@ export const ProductCard = ({
     >
 
       <img
-        src={
-          product.images?.[0]
-            ? `https://studentthrift-store-backend.onrender.com/${product.images[0]}`
-                       
-            : "https://via.placeholder.com/300"
-        }
+      src={getImageUrl(product.images?.[0])}
         alt={product.title}
         style={{
           width: "100%",

@@ -15,7 +15,10 @@ export default function ProductDetailPage({
   addToast,
   addToCart,
 }) {
-
+const getImageUrl = (img) => {
+  if (!img) return "https://via.placeholder.com/500";
+  return new URL(img, API).href;
+};
   const user = JSON.parse(
     localStorage.getItem("user")
   );
@@ -111,11 +114,7 @@ const orderNow = () => {
     }}
   >
     <img
-      src={
-        product.images?.[selectedImage]
-          ? `${API}/${product.images[selectedImage]}`
-          : "https://via.placeholder.com/500"
-      }
+src={getImageUrl(product.images?.[selectedImage])}
       alt={product.title}
       style={{
         width: "100%",
@@ -137,7 +136,7 @@ const orderNow = () => {
 product.images.map((img, index) =>  (
       <img
         key={index}
-        src={`${API}/${img}`}
+       src={getImageUrl(img)}
         alt="thumb"
         onClick={() =>
           setSelectedImage(index)
