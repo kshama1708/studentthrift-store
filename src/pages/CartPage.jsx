@@ -9,19 +9,7 @@ const API =
   process.env.REACT_APP_API_URL ||
   "https://studentthrift-store-backend.onrender.com";
 
-const getImageUrl = (img) => {
-  if (!img) return "https://via.placeholder.com/60";
 
-  if (typeof img === "string" && img.startsWith("http")) {
-    return img;
-  }
-
-  const cleanPath = img.startsWith("/")
-    ? img
-    : `/${img}`;
-
-  return `${API}${cleanPath}`;
-};
 
   // TOTAL
   const total = cart.reduce(
@@ -100,7 +88,11 @@ const getImageUrl = (img) => {
                   }}
                 >
   <img
-  src={getImageUrl(item.images?.[0])}
+  src={
+    item.images?.[0]
+      ? `${API}/${item.images[0]}`
+      : "https://via.placeholder.com/60"
+  }
   alt={item.title}
   onError={(e) => {
     e.target.src = "https://via.placeholder.com/60";
@@ -111,7 +103,7 @@ const getImageUrl = (img) => {
     borderRadius: 8,
     objectFit: "cover",
   }}
-/>           
+/>       
                   
 
                   <div>

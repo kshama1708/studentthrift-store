@@ -9,20 +9,9 @@ import {
   BackButton,
   EmptyState,
 } from "../components/UI";
-const getImageUrl = (img) => {
-  if (!img) return "https://via.placeholder.com/60";
-
-  if (typeof img === "string" && img.startsWith("http")) {
-    return img;
-  }
-
-  const cleanPath = img.startsWith("/")
-    ? img
-    : `/${img}`;
-
-  return `${API}${cleanPath}`;
-};
-  
+const API =
+  process.env.REACT_APP_API_URL ||
+  "https://studentthrift-store-backend.onrender.com";
 export default function WishlistPage({
   setPage,
   wishlist,
@@ -193,8 +182,12 @@ export default function WishlistPage({
                 className="product-img"
               >
  <img
-  src={getImageUrl(item.images?.[0])}
-  alt={item.title}
+  src={
+    p.images?.[0]
+      ? `${API}/${p.images[0]}`
+      : "https://via.placeholder.com/60"
+  }
+  alt={p.title}
   onError={(e) => {
     e.target.src = "https://via.placeholder.com/60";
   }}
