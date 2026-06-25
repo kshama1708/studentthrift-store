@@ -185,7 +185,7 @@ export default function WishlistPage({
               <img
   src={
     p.images?.[0]
-      ? `${API}/${p.images[0]}`
+      ? p.images[0]
       : "https://via.placeholder.com/300"
   }
   alt={p.title}
