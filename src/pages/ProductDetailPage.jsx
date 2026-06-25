@@ -16,8 +16,7 @@ export default function ProductDetailPage({
   addToCart,
 }) {
 const getImageUrl = (img) => {
-  if (!img) return "https://via.placeholder.com/500";
-  return new URL(img, API).href;
+  return img || "https://via.placeholder.com/500";
 };
   const user = JSON.parse(
     localStorage.getItem("user")
@@ -25,6 +24,7 @@ const getImageUrl = (img) => {
 
   const [selectedImage, setSelectedImage] =
     useState(0);
+console.log(JSON.stringify(product, null, 2));
   if (!product) return null;
 
   const productId =
@@ -77,6 +77,8 @@ const orderNow = () => {
 
   setPage("cart");
 };
+console.log("Product:", product);
+console.log("Images:", product.images);
   return (
     <div
       className="page"

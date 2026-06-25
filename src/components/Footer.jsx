@@ -34,7 +34,7 @@ export default function Footer() {
         <div>
           <p style={{ fontWeight: 600, color: "#fff", marginBottom: 10, fontSize: 13 }}>Contact</p>
           <p style={{ fontSize: 13, marginBottom: 4 }}>📧 supportthriftstore@gmail.com</p>
-          <p style={{ fontSize: 13, marginBottom: 4 }}>📞 +91 98765 43210</p>
+          <p style={{ fontSize: 13, marginBottom: 4 }}>📞 +91 00000 00000</p>
         </div>
       </div>
 

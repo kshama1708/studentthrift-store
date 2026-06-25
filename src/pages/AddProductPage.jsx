@@ -10,10 +10,12 @@ const CATEGORY_OPTIONS = [
   "Stationery",
 ];
 export const getImageUrl = (img) => {
-  if (!img) return "https://via.placeholder.com/300";
-  return `${API}${img.startsWith("/") ? "" : "/"}${img}`;
+  if (!img)
+    return "https://via.placeholder.com/300";
+
+  return img;
 };
-const API = process.env.REACT_APP_API_URL;
+
 export default function AddProductPage({
   setPage,
   addToast,

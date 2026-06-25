@@ -22,10 +22,6 @@ import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckOutPages";
 
 import { PRODUCTS } from "./data/Data";
-console.log(
-  "API URL:",
-  process.env.REACT_APP_API_URL
-);
 const API =
   process.env.REACT_APP_API_URL ||
   "http://localhost:5000";

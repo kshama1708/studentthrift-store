@@ -32,11 +32,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Serve uploaded product images
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use(
-  "/uploads",
-  express.static("uploads")
-);
+const uploadsPath = path.join(__dirname, "uploads");
+console.log("Uploads Path:", uploadsPath);
+
+
+
 // ── Routes ───────────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);

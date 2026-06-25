@@ -1,46 +1,329 @@
-/* Navbar */
+/* ===================================================
+   ROOT VARIABLES
+=================================================== */
+
+:root {
+  --green-50: #eaf3de;
+  --green-100: #c0dd97;
+  --green-200: #97c459;
+  --green-600: #3b6d11;
+  --green-700: #27500a;
+  --cream-200: #e8e4da;
+  --font-display: Georgia, serif;
+}
+
+/* ===================================================
+   NAVBAR
+=================================================== */
 
 .navbar {
-  height: 64px;
-
-  background: white;
-
-  border-bottom: 1px solid var(--cream-200);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  padding: 0 24px;
+  height: 68px;
+  padding: 0 clamp(16px, 4vw, 40px);
 
-  position: sticky;
-  top: 0;
+  background: rgba(255, 255, 255, 0.97);
+  border-bottom: 1px solid var(--cream-200);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
 
-  z-index: 100;
+/* ===================================================
+   LEFT
+=================================================== */
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
 }
 
 .nav-logo {
   font-family: var(--font-display);
-
-  font-size: 22px;
+  font-size: 1.35rem;
   font-weight: 700;
-
   color: var(--green-600);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+}
+
+/* ===================================================
+   RIGHT
+=================================================== */
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding-left: 18px;
+  border-left: 1px solid var(--cream-200);
+}
+
+/* ===================================================
+   BUTTONS
+=================================================== */
+
+.nav-link,
+.btn-ghost,
+.btn-outline,
+.btn-primary {
+  border: none;
+  border-radius: 8px;
+  padding: 9px 14px;
+
+  font-size: 14px;
+  cursor: pointer;
+
+  transition: all .25s ease;
+}
+
+.nav-link,
+.btn-ghost {
+  background: transparent;
+  color: #444;
+}
+
+.nav-link:hover,
+.btn-ghost:hover {
+  background: var(--green-50);
 }
 
 .nav-link.active {
   background: var(--green-50);
   color: var(--green-600);
+  font-weight: 600;
 }
 
-.nav-right {
+.btn-outline {
+  background: white;
+  border: 1px solid var(--green-600);
+  color: var(--green-600);
+}
+
+.btn-outline:hover {
+  background: var(--green-50);
+}
+
+.btn-primary {
+  background: var(--green-600);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--green-700);
+}
+
+/* ===================================================
+   PROFILE
+=================================================== */
+
+.profile-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+}
+
+/* ===================================================
+   CART
+=================================================== */
+
+.desktop-cart {
+  position: relative;
+}
+
+.cart-mobile-btn {
+  display: none;
+
+  position: relative;
+  margin-left: auto;
+  margin-right: 12px;
+
+  border: none;
+  background: transparent;
+
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+
+  background: red;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 11px;
+  font-weight: bold;
+}
+
+/* ===================================================
+   HAMBURGER
+=================================================== */
+
+.hamburger {
+  display: none;
+
+  width: 42px;
+  height: 42px;
+
+  background: transparent;
+  border: none;
+
+  cursor: pointer;
+
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 5px;
+
+  position: relative;
+  z-index: 1002;
+}
+
+.hamburger span {
+  width: 24px;
+  height: 2px;
+
+  background: var(--green-700);
+
+  transition: .3s;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ===================================================
+   MOBILE DRAWER
+=================================================== */
+
+.nav-menu {
+  display: none;
+}
+
+/* ===================================================
+   OVERLAY
+=================================================== */
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, .35);
+  backdrop-filter: blur(2px);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition: .3s;
+
+  z-index: 999;
+}
+
+.menu-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ===================================================
+   RESPONSIVE
+=================================================== */
+
+.desktop-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-menu {
+    display: flex;
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: #fff;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 80px 20px;
+    gap: 12px;
+    transition: right 0.3s ease;
+    z-index: 1001;
+  }
+
+  .nav-menu.active {
+    right: 0;
+  }
+}
+/* ===================================================
+   SMALL PHONES
+=================================================== */
+
+@media (max-width:480px) {
+
+  .navbar {
+    padding: 0 14px;
+  }
+
+  .nav-logo {
+    font-size: 1.05rem;
+  }
+
+  .nav-menu {
+    width: 250px;
+    padding: 80px 18px 20px;
+  }
+
+  .cart-mobile-btn {
+    font-size: 22px;
+    margin-right: 8px;
+  }
 }
