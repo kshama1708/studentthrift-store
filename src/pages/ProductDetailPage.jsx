@@ -16,7 +16,17 @@ export default function ProductDetailPage({
   addToCart,
 }) {
 const getImageUrl = (img) => {
-  return img || "https://via.placeholder.com/500";
+  if (!img) {
+    return "https://via.placeholder.com/500";
+  }
+
+  // Cloudinary image
+  if (img.startsWith("http")) {
+    return img;
+  }
+
+  // Local upload
+  return `${API}/${img}`;
 };
   const user = JSON.parse(
     localStorage.getItem("user")
@@ -115,15 +125,15 @@ console.log("Images:", product.images);
       marginBottom: 12,
     }}
   >
-    <img
-src={getImageUrl(product.images?.[selectedImage])}
-      alt={product.title}
-      style={{
-        width: "100%",
-        height: "100%",
-        objectFit: "cover",
-      }}
-    />
+<img
+  src={getImageUrl(product.images?.[selectedImage])}
+  alt={product.title}
+  style={{
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  }}
+/>
   </div>
 
   {/* THUMBNAILS */}
@@ -134,27 +144,25 @@ src={getImageUrl(product.images?.[selectedImage])}
       flexWrap: "wrap",
     }}
   >
-    {product.images?.length > 0 &&
-product.images.map((img, index) =>  (
-      <img
-        key={index}
-       src={getImageUrl(img)}
-        alt="thumb"
-        onClick={() =>
-          setSelectedImage(index)
-        }
-        style={{
-          width: window.innerWidth < 768 ? 60 : 80,
-height: window.innerWidth < 768 ? 60 : 80,
-          objectFit: "cover",
-          borderRadius: 10,
-          cursor: "pointer",
-          border:
-            selectedImage === index
-              ? "2px solid green"
-              : "1px solid #ddd",
-        }}
-      />
+    {product.images?.map((img, index) => (
+  <img
+    key={index}
+    src={getImageUrl(img)}
+    alt="thumb"
+    onClick={() => setSelectedImage(index)}
+    style={{
+      width: window.innerWidth < 768 ? 60 : 80,
+      height: window.innerWidth < 768 ? 60 : 80,
+      objectFit: "cover",
+      borderRadius: 10,
+      cursor: "pointer",
+      border:
+        selectedImage === index
+          ? "2px solid green"
+          : "1px solid #ddd",
+    }}
+  />
+
     ))}
   </div>
 </div>

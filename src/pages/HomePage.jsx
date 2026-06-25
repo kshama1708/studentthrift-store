@@ -50,21 +50,26 @@ useEffect(() => {
   };
 
   // ───── WISHLIST ─────
-  const toggleWishlist = (id) => {
-    setWishlist((w) =>
-      w.includes(id)
-        ? w.filter((x) => x !== id)
-        : [...w, id]
-    );
+const toggleWishlist = (id) => {
+  // User must be logged in
+  if (!user) {
+    addToast("Please login first", "error");
+    setPage("login");
+    return;
+  }
 
-    const isAlready = wishlist.includes(id);
+  const isAlready = wishlist.includes(id);
 
-    addToast(
-      isAlready ? "Removed from wishlist" : "Added to wishlist ♥",
-      "success"
-    );
-  };
+  if (isAlready) {
+    setWishlist((w) => w.filter((x) => x !== id));
 
+    addToast("Removed from wishlist", "success");
+  } else {
+    setWishlist((w) => [...w, id]);
+
+    addToast("Added to wishlist ♥", "success");
+  }
+};
 
 
   // VIEW PRODUCT
