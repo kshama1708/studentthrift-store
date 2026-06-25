@@ -393,7 +393,7 @@ function WishlistTab({
   };
 
   fetchWishlistProducts();
-}, [wishlist]);
+}, [wishlist, addToast, setPage]);
   // REMOVE
   const removeFromWishlist =
     (id) => {
