@@ -11,7 +11,24 @@ export default function WishlistPage({
 }) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+const API =
+  process.env.REACT_APP_API_URL ||
+  "https://studentthrift-store-backend.onrender.com";
 
+const getImageUrl = (img) => {
+  if (!img) return "https://via.placeholder.com/300";
+
+  // Already a full URL
+  if (img.startsWith("http")) return img;
+
+  // If backend already returns "/uploads/..."
+  if (img.startsWith("/")) {
+    return `${API}${img}`;
+  }
+
+  // If backend returns only filename
+  return `${API}/uploads/${img}`;
+};
   // Check login
   const token = localStorage.getItem("token");
   const user = JSON.parse(localStorage.getItem("user"));
@@ -137,20 +154,17 @@ export default function WishlistPage({
           {items.map((p) => (
             <div key={p._id} className="product-card">
               <div className="product-img">
-                <img
-                  src={
-                    p.images?.[0] ||
-                    "https://via.placeholder.com/300"
-                  }
-                  alt={p.title}
-                  className="product-image"
-                  style={{
-                    width: "100%",
-                    height: 200,
-                    objectFit: "cover",
-                    borderRadius: 12,
-                  }}
-                />
+              <img
+  src={getImageUrl(p.images?.[0])}
+  alt={p.title}
+  className="product-image"
+  style={{
+    width: "100%",
+    height: 200,
+    objectFit: "cover",
+    borderRadius: 12,
+  }}
+/>
               </div>
 
               <div className="product-body">

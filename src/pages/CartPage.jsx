@@ -5,7 +5,20 @@ export default function CartPage({ cart, setCart, setPage }) {
     setCart((prev) => prev.filter((item) => item._id !== id));
   };
 
+const API =
+  process.env.REACT_APP_API_URL ||
+  "https://studentthrift-store-backend.onrender.com";
 
+const getImageUrl = (img) => {
+  if (!img) return "https://via.placeholder.com/90";
+
+  // Already full URL
+  if (img.startsWith("http")) return img;
+
+  // Backend image path
+  return `${API}${img}`;
+  // or `${API}/uploads/${img}` depending on your backend
+};
 
   // TOTAL
   const total = cart.reduce(
@@ -83,21 +96,18 @@ export default function CartPage({ cart, setCart, setPage }) {
                     alignItems: "center",
                   }}
                 >
-                  <img
-
-                    src={
-                      item.images?.[0]
-                        ? item.images[0]
-                        : "https://via.placeholder.com/90"
-                    }
-                    alt={item.title}
-                    style={{
-                      width: 90,
-                      height: 90,
-                      objectFit: "cover",
-                      borderRadius: 10,
-                    }}
-                  />
+                 <img
+  src={getImageUrl(item.images?.[0])}
+  alt={item.title}
+  style={{
+    width: 90,
+    height: 90,
+    objectFit: "cover",
+    borderRadius: 10,
+  }}
+/>
+                  
+                  
 
                   <div>
                     <h3 style={{ margin: 0 }}>
