@@ -12,7 +12,17 @@ import {
 const API =
   process.env.REACT_APP_API_URL ||
   "http://localhost:5000";
-  
+  const getImageUrl = (img) => {
+  if (!img) return "https://via.placeholder.com/60";
+
+  // Cloudinary or full URL
+  if (typeof img === "string" && img.startsWith("http")) {
+    return img;
+  }
+
+  // Backend upload
+  return `${API}/${img}`;
+};
   
 export default function WishlistPage({
   setPage,
@@ -184,22 +194,19 @@ export default function WishlistPage({
                 className="product-img"
               >
   <img
-                          src={
-                            p.images?.[0]
-                              ? `${API}/${p.images[0]}`
-                              : "https://via.placeholder.com/60"
-                          }
-                          alt={
-                            p.title
-                          }
-                          style={{
-                            width: 50,
-                            height: 50,
-                            borderRadius: 8,
-                            objectFit:
-                              "cover",
-                          }}
-                        />
+  src={getImageUrl(p.images?.[0])}
+  alt={p.title}
+  onError={(e) => {
+    e.target.src = "https://via.placeholder.com/60";
+  }}
+  style={{
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    objectFit: "cover",
+    background: "#f3f3f3",
+  }}
+/>
               </div>
 
               {/* BODY */}

@@ -12,12 +12,13 @@ const API =
 const getImageUrl = (img) => {
   if (!img) return "https://via.placeholder.com/90";
 
-  // Already full URL
-  if (img.startsWith("http")) return img;
+  // Cloudinary or full URL
+  if (typeof img === "string" && img.startsWith("http")) {
+    return img;
+  }
 
-  // Backend image path
-  return `${API}${img}`;
-  // or `${API}/uploads/${img}` depending on your backend
+  // Backend uploaded image
+  return `${API}/${img}`;
 };
 
   // TOTAL
@@ -96,14 +97,18 @@ const getImageUrl = (img) => {
                     alignItems: "center",
                   }}
                 >
-                 <img
+  <img
   src={getImageUrl(item.images?.[0])}
   alt={item.title}
+  onError={(e) => {
+    e.target.src = "https://via.placeholder.com/90";
+  }}
   style={{
     width: 90,
     height: 90,
     objectFit: "cover",
     borderRadius: 10,
+    background: "#f3f3f3",
   }}
 />
                   
