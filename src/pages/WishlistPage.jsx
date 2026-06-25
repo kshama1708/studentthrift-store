@@ -9,19 +9,18 @@ import {
   BackButton,
   EmptyState,
 } from "../components/UI";
-const API =
-  process.env.REACT_APP_API_URL ||
-  "http://localhost:5000";
-  const getImageUrl = (img) => {
+const getImageUrl = (img) => {
   if (!img) return "https://via.placeholder.com/60";
 
-  // Cloudinary or full URL
   if (typeof img === "string" && img.startsWith("http")) {
     return img;
   }
 
-  // Backend upload
-  return `${API}/${img}`;
+  const cleanPath = img.startsWith("/")
+    ? img
+    : `/${img}`;
+
+  return `${API}${cleanPath}`;
 };
   
 export default function WishlistPage({
@@ -193,7 +192,7 @@ export default function WishlistPage({
               <div
                 className="product-img"
               >
-  <img
+ <img
   src={getImageUrl(p.images?.[0])}
   alt={p.title}
   onError={(e) => {
@@ -204,7 +203,6 @@ export default function WishlistPage({
     height: 50,
     borderRadius: 8,
     objectFit: "cover",
-    background: "#f3f3f3",
   }}
 />
               </div>

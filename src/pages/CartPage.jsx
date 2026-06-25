@@ -10,15 +10,17 @@ const API =
   "https://studentthrift-store-backend.onrender.com";
 
 const getImageUrl = (img) => {
-  if (!img) return "https://via.placeholder.com/90";
+  if (!img) return "https://via.placeholder.com/60";
 
-  // Cloudinary or full URL
   if (typeof img === "string" && img.startsWith("http")) {
     return img;
   }
 
-  // Backend uploaded image
-  return `${API}/${img}`;
+  const cleanPath = img.startsWith("/")
+    ? img
+    : `/${img}`;
+
+  return `${API}${cleanPath}`;
 };
 
   // TOTAL
@@ -98,20 +100,18 @@ const getImageUrl = (img) => {
                   }}
                 >
   <img
-  src={getImageUrl(item.images?.[0])}
-  alt={item.title}
+  src={getImageUrl(p.images?.[0])}
+  alt={p.title}
   onError={(e) => {
-    e.target.src = "https://via.placeholder.com/90";
+    e.target.src = "https://via.placeholder.com/60";
   }}
   style={{
-    width: 90,
-    height: 90,
+    width: 50,
+    height: 50,
+    borderRadius: 8,
     objectFit: "cover",
-    borderRadius: 10,
-    background: "#f3f3f3",
   }}
-/>
-                  
+/>           
                   
 
                   <div>
