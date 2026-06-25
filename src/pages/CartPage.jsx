@@ -84,9 +84,10 @@ export default function CartPage({ cart, setCart, setPage }) {
                   }}
                 >
                   <img
+
                     src={
                       item.images?.[0]
-                        ? `https://studentthrift-store-backend.onrender.com/${item.images[0]}`
+                        ? item.images[0]
                         : "https://via.placeholder.com/90"
                     }
                     alt={item.title}
@@ -112,7 +113,7 @@ export default function CartPage({ cart, setCart, setPage }) {
                       ₹{item.price}
                     </p>
 
-             
+
                   </div>
                 </div>
 
@@ -159,21 +160,21 @@ export default function CartPage({ cart, setCart, setPage }) {
             <h2>Total: ₹{total}</h2>
 
             <button
-  onClick={() =>
-    setPage("checkout")
-  }
-  style={{
-    marginTop: 10,
-    padding: "12px 22px",
-    background: "green",
-    color: "#fff",
-    border: "none",
-    borderRadius: 8,
-    cursor: "pointer",
-  }}
->
-  Proceed to Checkout
-</button>
+              onClick={() =>
+                setPage("checkout")
+              }
+              style={{
+                marginTop: 10,
+                padding: "12px 22px",
+                background: "green",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                cursor: "pointer",
+              }}
+            >
+              Proceed to Checkout
+            </button>
           </div>
 
           {/* BACK */}

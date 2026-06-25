@@ -182,7 +182,7 @@ export default function WishlistPage({
               <div
                 className="product-img"
               >
-              <img
+     <img
   src={
     p.images?.[0]
       ? p.images[0]
