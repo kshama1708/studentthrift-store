@@ -100,8 +100,8 @@ const getImageUrl = (img) => {
                   }}
                 >
   <img
-  src={getImageUrl(p.images?.[0])}
-  alt={p.title}
+  src={getImageUrl(item.images?.[0])}
+  alt={item.title}
   onError={(e) => {
     e.target.src = "https://via.placeholder.com/60";
   }}
