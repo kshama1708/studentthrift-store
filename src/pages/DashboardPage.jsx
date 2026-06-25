@@ -363,51 +363,37 @@ function WishlistTab({
     useState(true);
 
   // FETCH PRODUCTS
-  useEffect(() => {
+ useEffect(() => {
+  const token = localStorage.getItem("token");
 
-    const fetchWishlistProducts =
-      async () => {
+  if (!token) {
+    addToast?.("Please login first", "error");
+    setPage("login");
+    return;
+  }
 
-        try {
+  const fetchWishlistProducts = async () => {
+    try {
+      setLoading(true);
 
-          setLoading(true);
+      const res = await axios.get(`${API}/api/products`);
 
-          const res =
-            await axios.get(
-              `${API}/api/products`
-            );
+      const allProducts = res.data.products || [];
 
-          const allProducts =
-            res.data.products ||
-            [];
+      const wishlistProducts = allProducts.filter((p) =>
+        wishlist.includes(p._id)
+      );
 
-          const wishlistProducts =
-            allProducts.filter(
-              (p) =>
-                wishlist.includes(
-                  p._id
-                )
-            );
+      setItems(wishlistProducts);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-          setItems(
-            wishlistProducts
-          );
-
-        } catch (error) {
-
-          console.log(error);
-
-        } finally {
-
-          setLoading(false);
-
-        }
-      };
-
-    fetchWishlistProducts();
-
-  }, [wishlist]);
-
+  fetchWishlistProducts();
+}, [wishlist]);
   // REMOVE
   const removeFromWishlist =
     (id) => {
